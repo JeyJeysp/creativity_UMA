@@ -16,12 +16,17 @@ int encendido, valor_ant, num_umbral;
 unsigned long tiempo_ant;
 
 
+// --- Funciones --- //
+void comprobarNTC (int v, unsigned long t);
+void comprobarMicro (int v, unsigned long t);
+
+
 // --- Setup y Loop --- //
 void setup() {
 	Serial.begin(9600);
-	pinMode(2, OUTPUT);
+	pinMode(2, OUTPUT);		//El pin 2 se utilizara digitalmente para abrir/cerrar el rele.
 
-	encendido = 0;
+	encendido = 0;			//Variable de control utilizada para gestionar el rele.
 	valor_ant = 0;
 	tiempo_ant = 0;
 	num_umbral = 0;
@@ -31,10 +36,12 @@ void loop() {
 	if (!encendido){          //VELA APAGADA: Sondeamos valores del NTC.
 		int valor = analogRead(A0);
 		unsigned long tiempo = millis();
+		
+		comprobarNTC(valor, tiempo);
     //Serial.print("TEMP: ");
     //Serial.println(valor);
     
-		if (valor < 490){
+		if (valor < 350){
 			if (!valor_ant){
 				valor_ant = valor;
 				tiempo_ant = tiempo;
@@ -101,6 +108,26 @@ void loop() {
 				num_umbral = 0;
 				tiempo_ant = 0;
 			}*/
+		}
+	}
+}
+
+
+void comprobarNTC (int v, unsigned long t){
+	if (valor < UMBRAL_NTC){
+		if (!valor_ant){
+			valor_ant = v;
+			tiempo_ant = t;
+		} else if ((valor < UMBRAL_NTC) && (valor < valor_ant) && (tiempo > (tiempo_ant + intervalo))) {    //Hemos comprobado que el valor del NTC cae y es menor que el anterior en 0.1 segundos.
+			//Serial.println("        ENCIENDO");
+			encendido = 1;
+			valor_ant = 0;
+			tiempo_ant = 0;
+		
+			digitalWrite(2, 1);
+		} else if (((valor < UMBRAL_NTC) && (valor > valor_ant)) || (tiempo > (tiempo_ant + un_segundo))){
+			valor_ant = 0;
+			tiempo_ant = 0;
 		}
 	}
 }
