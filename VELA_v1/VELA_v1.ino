@@ -37,7 +37,7 @@ void loop() {
 		int valor = analogRead(A0);
 		unsigned long tiempo = millis();
 	    //Serial.print("TEMP: ");
-   		//Serial.println(valor);		
+   		Serial.println(valor);		
 		
 		comprobarNTC(valor, tiempo);
 	} else {                //VELA ENCENDIDA: Sondeamos valores del micro.
@@ -53,7 +53,7 @@ void loop() {
 
 
 void comprobarNTC (int v, unsigned long t){
-	if((valor_cambio > v-10) && valor_cambio)
+	if((valor_cambio > v-10) && (valor_cambio != 0))
     	v = analogRead(A0);
 	else {
     	valor_cambio = 0;
@@ -66,7 +66,7 @@ void comprobarNTC (int v, unsigned long t){
 			encendido = 1;
 			valor_ant = 0;
 			tiempo_ant = 0;
-     		valor_cambio = 0;
+     	valor_cambio = 0;
 		
 			digitalWrite(2, 1);
 		} else if ((v > valor_ant) || (t > (tiempo_ant + un_segundo/4))){
