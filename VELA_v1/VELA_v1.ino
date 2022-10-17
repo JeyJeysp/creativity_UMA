@@ -7,12 +7,12 @@
 // --- Definiciones --- //
 #define intervalo 50
 #define un_segundo 1000
-#define UMBRAL_NTC 400
+#define UMBRAL_NTC 700
 #define UMBRAL_Micro 650
 
 
 // --- Variables globales --- //
-int encendido, valor_ant, num_umbral;
+int encendido, valor_ant, num_umbral,valor_cambio;
 unsigned long tiempo_ant;
 
 
@@ -37,7 +37,7 @@ void loop() {
 		int valor = analogRead(A0);
 		unsigned long tiempo = millis();
     //Serial.print("TEMP: ");
-   	//Serial.println(valor);		
+   	Serial.println(valor);		
 		
 		comprobarNTC(valor, tiempo);
 	} else {                //VELA ENCENDIDA: Sondeamos valores del micro.
@@ -53,18 +53,25 @@ void loop() {
 
 
 void comprobarNTC (int v, unsigned long t){
-	if (v < UMBRAL_NTC){
+  if(valor_cambio>v-10 && valor_cambio)
+  {
+    v=analogRead(A0);
+    
+  }
+	else if(v < UMBRAL_NTC){
+    valor_cambio=0;
 		if (!valor_ant){
 			valor_ant = v;
 			tiempo_ant = t;
-		} else if ((v < UMBRAL_NTC) && (v < valor_ant-10) && (t > (tiempo_ant + intervalo))){    //Hemos comprobado que el valor del NTC cae y es menor que el anterior en 0.1 segundos.
-			//Serial.println("        ENCIENDO");
+		} else if ((v < valor_ant*0.93) && (t > (tiempo_ant + intervalo*2))){    //Hemos comprobado que el valor del NTC cae y es menor que el anterior en 0.1 segundos.
+			Serial.println("        ENCIENDO");
 			encendido = 1;
 			valor_ant = 0;
 			tiempo_ant = 0;
+     valor_cambio=0;
 		
 			digitalWrite(2, 1);
-		} else if (((v < UMBRAL_NTC) && (v > valor_ant)) || (t > (tiempo_ant + un_segundo/2))){
+		} else if (((v > valor_ant)) || (t > (tiempo_ant + un_segundo/4))){
 			valor_ant = 0;
 			tiempo_ant = 0;
 		}
@@ -76,12 +83,16 @@ void comprobarMicro (int v, unsigned long t){
 	if (v > UMBRAL_Micro){
     if (!tiempo_ant){
       tiempo_ant = t;
+      
     } else if ((v > UMBRAL_Micro) && (t > (tiempo_ant + intervalo*4))){
       if(num_umbral < 3)
         num_umbral++;
       else{
-        //Serial.println("        APAGO");
+        Serial.println("        APAGO");
         encendido = 0;
+        valor_cambio=analogRead(A0);
+        Serial.print("Valor en el cambio:");
+        Serial.println(valor_cambio);
         tiempo_ant = 0;
         num_umbral = 0;
 
