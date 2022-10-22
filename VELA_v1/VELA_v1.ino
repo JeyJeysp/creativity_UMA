@@ -7,7 +7,7 @@
 // --- Definiciones --- //
 #define intervalo 50
 #define un_segundo 1000
-#define UMBRAL_NTC 700
+//#define UMBRAL_NTC 700
 #define UMBRAL_Micro 650
 
 
@@ -58,12 +58,13 @@ void comprobarNTC (int v, unsigned long t){
     v=analogRead(A0);
     
   }
-	else if(v < UMBRAL_NTC){
+	else
+  {
     valor_cambio=0;
 		if (!valor_ant){
 			valor_ant = v;
 			tiempo_ant = t;
-		} else if ((v < valor_ant*0.93) && (t > (tiempo_ant + intervalo*2))){    //Hemos comprobado que el valor del NTC cae y es menor que el anterior en 0.1 segundos.
+		} else if ((v < valor_ant*0.80) && (t > (tiempo_ant + intervalo*2))){    //Hemos comprobado que el valor del NTC cae y es menor que el anterior en 0.1 segundos.
 			Serial.println("        ENCIENDO");
 			encendido = 1;
 			valor_ant = 0;
