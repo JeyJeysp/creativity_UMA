@@ -1,6 +1,10 @@
+
 import processing.serial.*;
 ArrayList<Taiko> taikos;
 Serial myPort;
+float position;
+int score=0;
+int acertado;
 
 void setup()
 {
@@ -12,19 +16,21 @@ void setup()
   myPort.bufferUntil(10);
   myPort.clear();
   
-  fill(color(232,204,215));
-  ellipse(25,displayHeight,25,25);
 }
 
 void draw()
 {
-  if(random(4.0)>3.80)
+  if(random(100.0)>98.0)
   {
       creaTaiko();
   }
   background(155, 226, 244);
+  fill(color(0.0,0.0,0.0));
+  textSize(126);
+  text(score,100,100);
   fill(color(232,204,215));
   ellipse(200,displayHeight/2,175,175);
+  
 
   for (int i = 0; i<taikos.size(); i++)
   {
@@ -35,7 +41,22 @@ void draw()
 }
 void mousePressed()
 {
- creaTaiko(); 
+ //creaTaiko(); 
+ acertado=0;
+ for (int i = 0; i<taikos.size(); i++)
+      {
+        Taiko g = taikos.get(i);
+        position=g.position();
+        if (position>110 && position<285)
+        {
+            score+=1;
+            acertado=1;
+        }       
+      }
+        if(acertado==0)
+        {
+          score-=1;
+        }
 }
 
 void serialEvent(Serial p)
@@ -45,9 +66,24 @@ void serialEvent(Serial p)
   //println(datoS);
   if (datoS.equals("Knock!"))
   {
-      creaTaiko();
+      acertado=0;
+      for (int i = 0; i<taikos.size(); i++)
+      {
+        Taiko g = taikos.get(i);
+        position=g.position();
+        if (position>200 && position<400)
+        {
+            score+=1;
+            acertado=1;
+        }       
+      }
+        if(acertado==0)
+        {
+          score-=1;
+        }
+          
   }
-}
+  }
 
 void creaTaiko()
 {
