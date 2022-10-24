@@ -7,7 +7,7 @@
 // --- Definiciones --- //
 #define intervalo 50
 #define un_segundo 1000
-#define PORCENTAJE 0.97
+//#define UMBRAL_NTC 700
 #define UMBRAL_Micro 650
 
 
@@ -53,16 +53,20 @@ void loop() {
 
 
 void comprobarNTC (int v, unsigned long t){
-	if((valor_cambio > v-10) && (valor_cambio != 0))
-    	v = analogRead(A0);
-	else {
-    	valor_cambio = 0;
-		
+  if(valor_cambio>v-10 && valor_cambio)
+  {
+    v=analogRead(A0);
+    
+  }
+	else
+  {
+    valor_cambio=0;
 		if (!valor_ant){
 			valor_ant = v;
 			tiempo_ant = t;
-		} else if ((v < (valor_ant * PORCENTAJE)) && (t > (tiempo_ant + intervalo*2))){    //Hemos comprobado que el valor del NTC cae y es menor que el anterior en 0.1 segundos.
-			//Serial.println("        ENCIENDO");
+		} else if ((v < valor_ant*0.80) && (t > (tiempo_ant + intervalo*2))){    //Hemos comprobado que el valor del NTC cae y es menor que el anterior en 0.1 segundos.
+			Serial.println("        ENCIENDO");
+
 			encendido = 1;
 			valor_ant = 0;
 			tiempo_ant = 0;
