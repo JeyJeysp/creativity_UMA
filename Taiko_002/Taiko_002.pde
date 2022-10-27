@@ -33,15 +33,19 @@ void setup()
   peppo_feliz = loadImage("pepe_feliz.jpg");
   peppo_serio = loadImage("pepe_serio.jpg");
   fuente = createFont("Japonesa.ttf", 128);
-  file = new SoundFile(this,"Sea_Shanty.wav");
-  file.loop();
-  //file.play();
+  file = new SoundFile(this,"Torero.wav");
+  //file.loop();
+  file.play();
   noCursor();
-  peppo=peppo_serio;
+  //peppo=peppo_serio;
 }
 
 void draw()
 {
+  if(millis()/1000 > file.duration()-1)
+  {
+    exit(); 
+  }
   if(random(100.0)>99.0)
   {
       creaTaiko();
@@ -76,7 +80,10 @@ void draw()
       creaScore(-1); 
       if(((score+1) % 10 == 0))
       {
-        l-=5;;
+        if(l>-5)
+        {
+          l-=5;
+        }
         creaLevel(1);
       }
     }
@@ -156,7 +163,10 @@ void accion()
      peppo=peppo_triste;
      if(((score+1) % 10 == 0))
      {
-       l-=5;;
+       if(l>-5)
+       {
+         l-=5;
+       }
        creaLevel(1);
      }
           /*if((score % 10 == 0))
