@@ -32,8 +32,9 @@ void setup()
   peppo_triste = loadImage("pepe_triste.jpg");
   peppo_feliz = loadImage("pepe_feliz.jpg");
   peppo_serio = loadImage("pepe_serio.jpg");
+  peppo=peppo_feliz;
   fuente = createFont("Japonesa.ttf", 128);
-  file = new SoundFile(this,"Torero.wav");
+  file = new SoundFile(this,"Sea_Shanty.wav");
   //file.loop();
   file.play();
   noCursor();
