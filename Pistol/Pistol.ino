@@ -1,17 +1,23 @@
-/* This example demonstrates use of the internal temperature sensor.
+  /* This example demonstrates use of the internal temperature sensor.
 |  Be sure to read the datasheet, particularly the part about how
 \  the sensor is basically uncalibrated. */
+#define P1 2 
+#define P2 3
+#define P3 4
+#define P4 5
   int pressed=0;
   int timeout=0;
-  unsigned long timepass1=0, timepass2=0;
-  int ammunition=10 ;
+  unsigned long timepass1=0, timepass2=0, antirrebotes = 0;
+  int ammunition=10;
   int shoot=0;
   int no_ammo=0;
+  int modo=-1;
+  
 void setup(){
 
-  pinMode(6,OUTPUT);
-  pinMode(5,OUTPUT);
-  pinMode(7,INPUT_PULLUP);
+  pinMode(P1,OUTPUT);
+  pinMode(P2,OUTPUT);
+  pinMode(P3,INPUT_PULLUP);
   Serial.begin(9600);
 }
 /*void loop()
@@ -61,38 +67,84 @@ void setup(){
 void loop()
 {
   unsigned long tiempo=millis();
-    Serial.print("ammunition: ");
-    Serial.println(ammunition);
-   if(digitalRead(7) == 0 && shoot == 0 && timeout == 0 && ammunition>0)
-  {
-    Serial.println("2");
-    digitalWrite(6,HIGH);
-    timepass1=tiempo;
-    shoot=1;
-    ammunition--;
-    timeout = 1;
-    if(ammunition == 0)
+  Serial.print("ammunition: ");
+  Serial.println(ammunition);
+  /*modo=digitalRead(P4);
+  if(modo == 1)
+  {*/
+    if(digitalRead(P3) == 0 && shoot == 0 && tiempo - antirrebotes > 200 && timeout == 0 && ammunition>0)
     {
-      no_ammo = 1;
-      timepass2=tiempo;
-      digitalWrite(5,HIGH);
+      digitalWrite(P1,HIGH);
+      timepass1=tiempo;
+      shoot=1;
+      ammunition--;
+      timeout = 1;
+      if(ammunition == 0)
+      {
+        no_ammo = 1;
+        timepass2=tiempo;
+        digitalWrite(P2,HIGH);
+      }
+    }else if(digitalRead(P3) == 1 && shoot == 1)
+    {
+      shoot = 0;
+
+    }   else if(tiempo-timepass1>50 && timeout == 1)
+    {  
+      digitalWrite(P1,LOW);
+      antirrebotes = tiempo;
+      timeout = 0;
+    }else if(tiempo-timepass2>10000 && no_ammo == 1)
+    {
+      digitalWrite(P2,LOW);
+      ammunition=10;
+      timeout = 0;
+      shoot = 0;
+      no_ammo = 0;
     }
-  }else if(digitalRead(7) == 1 && shoot == 1)
+  } /*else 
   {
-    Serial.println("3");
-    shoot = 0;
-  } else if(tiempo-timepass1>50 && timeout == 1)
-  {
-      
-    Serial.println("1");
-    digitalWrite(6,LOW);
-    timeout = 0;
-  }else if(tiempo-timepass2>10000 && no_ammo == 1)
-  {
-    digitalWrite(5,LOW);
-    ammunition=10;
-    timeout = 0;
-    shoot = 0;
-    no_ammo = 0;
-  }
+    
+    if(digitalRead(P3) == 0 && shoot == 0 && tiempo-timepass1 > 100 && timeout == 0 && ammunition>0)
+    {
+      Serial.println("AUTO 1");
+      digitalWrite(P1,HIGH);
+      timepass1=tiempo;
+      shoot=1;
+      ammunition--;
+      //timeout = 1;
+      if(ammunition == 0)
+      {
+        no_ammo = 1;
+        timepass2=tiempo;
+        digitalWrite(P2,HIGH);
+      }
+    } else if(digitalRead(P3) == 0 && tiempo-timepass1 > 50 && shoot == 1 && timeout == 0 && ammunition>0)
+    {
+      Serial.println("AUTO 2");
+      digitalWrite(P1,LOW);
+      timepass1=tiempo;
+      shoot=0;
+      ammunition--;
+      //timeout = 1;
+      if(ammunition == 0)
+      {
+        no_ammo = 1;
+        timepass2=tiempo;
+        digitalWrite(P2,HIGH);
+      }
+    }
+    else if(digitalRead(P3) == 1)
+    {
+      digitalWrite(P1,LOW);
+    }
+    else if(tiempo-timepass2>10000 && no_ammo == 1)
+    {
+      digitalWrite(P2,LOW);
+      ammunition=10;
+      timeout = 0;
+      shoot = 0;
+      no_ammo = 0;
+    }
 }
+}*/
