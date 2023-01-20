@@ -1,6 +1,3 @@
-    /* This example demonstrates use of the internal temperature sensor.
-|  Be sure to read the datasheet, particularly the part about how
-\  the sensor is basically uncalibrated. */
 #define Ray 6 
 #define Led 5
 #define Trigger 4
