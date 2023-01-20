@@ -1,4 +1,11 @@
+//--------------------------------------------------//
+// TITLE: Laser Pistol code                         //
+// AUTHORS: A Pena Castillo, JJ Navarrete Galvez    //
+//--------------------------------------------------//
 
+
+
+// --- DEFINITIONS --- //
 #define Ray 6 
 #define Led 5
 #define Trigger 4
@@ -11,6 +18,9 @@ int shoot=0;
 int no_ammo=0;
 int led_blink=0;
 int led=0;
+
+
+// --- Setup & Loop --- //
 void setup(){
 
   pinMode(Ray,OUTPUT);
@@ -76,4 +86,4 @@ void loop()
         led-=1;
       }
     }
-  } 
+  }
