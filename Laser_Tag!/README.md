@@ -1,3 +1,4 @@
-# Versión con selector de canciones (3 canciones a alegir)
-## Eliminación de la puntuación negativa
-## Variación de la frecuencia de aparición de Taikos en función del nivel
+## Lasr Tag!
+by A Peña Castillo and JJ Navarrete Gálvez
+
+Check the Instructable of this project.
